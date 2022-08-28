@@ -13,7 +13,7 @@ Reviewed: Yes
     
     Variables are assigned with < - 
     
-    ![Untitled](R%20Coding%20b9798d0f9b8546efbeb0e1e379a4322d/Untitled.png)
+    ![Untitled](Chapter2NamesAndValues/Untitled.png)
     
     Booleans are CASE SENSITIVE
     
