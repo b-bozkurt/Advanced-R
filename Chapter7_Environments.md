@@ -66,7 +66,17 @@ Bindings:
 6. Looks like rebindstops if it can't find the name assigned to it. <<- will create a new variable in the global environment in that case.
 
 ## 7.3.1
-1. Can't find the Where function to begin with
+1. 1. 1.  Modify `where()` to return _all_ environments that contain a binding for `name`. Carefully think through what type of object the function will need to return.
+```r
+where_b <- function(name, env = caller_env(), out <- list()) {
+  if (identical(env, empty_env())) {
+    out
+  } else {
+    # Recursive case
+    out<- append(out, env)
+    where_b(name, env_parent(env))
+  }
+}
 2. 
    ```r
    fget <- function (name, env = caller_env(),inherits=FALSE)
