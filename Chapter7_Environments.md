@@ -66,20 +66,26 @@ Bindings:
 6. Looks like rebindstops if it can't find the name assigned to it. <<- will create a new variable in the global environment in that case.
 
 ## 7.3.1
-1. 1. 1.  Modify `where()` to return _all_ environments that contain a binding for `name`. Carefully think through what type of object the function will need to return.
+1. 1.  Modify `where()` to return _all_ environments that contain a binding for `name`. Carefully think through what type of object the function will need to return.
 ```r
-where_b <- function(name, env = caller_env(), out <- list()) {
-  if (identical(env, empty_env())) {
+where_b <- function(name, env = caller_env(), out = list()) {
+  if (identical(env, empty_env())) 
+  {
     out
-  } else {
+    stop
+  }
+  else
+    where_b(name, env_parent(env), out)
+  if (env_has(env, name)){
     # Recursive case
     out<- append(out, env)
-    where_b(name, env_parent(env))
-  }
+  } 
 }
-2. 
-   ```r
-   fget <- function (name, env = caller_env(),inherits=FALSE)
+```
+
+3. 
+ ```r
+fget <- function (name, env = caller_env(),inherits=FALSE)
 {
   if (inherits==FALSE)
   {
@@ -87,7 +93,7 @@ where_b <- function(name, env = caller_env(), out <- list()) {
       get <- env_get(env, name)
       if(is.function(get))
       { 
-        return(get)
+        return(get[name])
       }
       else
       { 
@@ -101,6 +107,46 @@ where_b <- function(name, env = caller_env(), out <- list()) {
   }
 }
 ```
+
+
+## 7.4.5
+1. Using env_parents prints out the empty environment, while using search prints out the global environment, in addition to all the libraries attached to the system.
+2. The first function will be bound to the environment it was created in. F2 will be bound to the execution environment of f1, while f3 will be bound to f2s. x1 wil be present in f1, x2 in f2, so on.
+3. We should be able to use the code we made for fget()
+   ```r
+   fstr <- function (name, env = caller_env(),inherits=FALSE){
+function (object, ...) 
+UseMethod("str")
+fget <- function (name, env = caller_env(),inherits=FALSE)
+{
+  if (inherits==FALSE)
+  {
+    if (env_has(env, name))
+      get <- env_get(env, name)
+    if(is.function(get))
+    { 
+      return(get[name])
+    }
+    else
+    { 
+      print("Can't find function")
+    }
+    
+  }
+  else if(inherits== TRUE)
+  {
+    fget(name, env_parent(env))
+  }
+}
+}
+
+
+```
+
+
+
+## 7.5.5
+1. We can use Sys.getenv
 
 # Notes
 ## 7.2 Environment basics
